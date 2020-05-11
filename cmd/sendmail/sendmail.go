@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+	"path"
 
 	"github.com/paulbarfuss/gmail-go/pkg/auth"
+
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/gmail/v1"
 )
@@ -34,7 +37,8 @@ func getMessage(service *gmail.Service, user string, msgId string) string {
 // Creates a message for email
 
 func main() {
-	b, err := ioutil.ReadFile("credentials.json")
+	credentials := path.Join(os.Getenv("HOME"), ".credentials.json")
+	b, err := ioutil.ReadFile(credentials)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
@@ -44,7 +48,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := auth.getClient(config)
+	client := auth.GetClient(config)
 
 	srv, err := gmail.New(client)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/paulbarfuss/gmail-go/pkg/auth/auth"
+	"github.com/paulbarfuss/gmail-go/pkg/auth"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/gmail/v1"
 )
@@ -44,7 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := getClient(config)
+	client := auth.getClient(config)
 
 	srv, err := gmail.New(client)
 	if err != nil {

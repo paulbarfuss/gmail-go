@@ -42,3 +42,17 @@ func GetMessage(srv *gmail.Service, user string, msgId string) string {
 
 	return messagePartBody
 }
+
+func GetSnippet(srv *gmail.Service, user string, msgId string) (string, error) {
+
+	r, err := srv.Users.Messages.Get(user, msgId).Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve message: %v", err)
+	}
+
+	if len(r.Snippet) > 0 {
+		return r.Snippet, nil
+	}
+	return "", err
+
+}

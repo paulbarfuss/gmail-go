@@ -16,7 +16,12 @@ func main() {
 	}
 	user := "me"
 	msgs := getmail.ListMessages(srv, user)
-	for i := range msgs {
-		fmt.Println(getmail.GetMessage(srv, user, msgs[i]))
-	}
+	snippets := make(chan string)
+	go func(msgs []string) {
+		for _, snippet := range msgs {
+			unpack, _ := getmail.GetSnippet(srv, user, snippet)
+			snippets <- unpack
+		}
+	}(msgs)
+	fmt.Println(snippets)
 }

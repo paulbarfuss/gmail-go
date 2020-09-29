@@ -9,18 +9,18 @@ import (
 	"google.golang.org/api/gmail/v1"
 )
 
-func ListMessages(srv *gmail.Service, user string) []string {
+func ListMessageIds(srv *gmail.Service, user string) []string {
 
-	var msgs []string
+	var MessageIds []string
 	r, err := srv.Users.Messages.List(user).LabelIds("INBOX").Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve message list: %v", err)
 	}
 
 	for _, msg := range r.Messages {
-		msgs = append(msgs, msg.Id)
+		MessageIds = append(MessageIds, msg.Id)
 	}
-	return msgs
+	return MessageIds
 
 }
 
@@ -43,7 +43,7 @@ func GetMessage(srv *gmail.Service, user string, msgId string) string {
 	return messagePartBody
 }
 
-func GetSnippet(srv *gmail.Service, user string, msgId string) (string, error) {
+func GetSnippet(srv *gmail.Service, user string, msgId string) string {
 
 	r, err := srv.Users.Messages.Get(user, msgId).Do()
 	if err != nil {
@@ -51,8 +51,8 @@ func GetSnippet(srv *gmail.Service, user string, msgId string) (string, error) {
 	}
 
 	if len(r.Snippet) > 0 {
-		return r.Snippet, nil
+		return r.Snippet
 	}
-	return "", err
+	return ""
 
 }

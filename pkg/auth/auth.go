@@ -29,28 +29,28 @@ func CreateService() (*gmail.Service, error) {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
+
+	ctx := context.Background()
 	token := getToken(config)
 
-	tokenSource := config.TokenSource(context.Background(), token)
+	tokenSource := config.TokenSource(ctx, token)
 
-	srv, err := gmail.NewService(context.Background(), option.WithTokenSource(tokenSource))
-
+	srv, err := gmail.NewService(ctx, option.WithTokenSource(tokenSource))
 	if err != nil {
 		log.Fatalf("Unable to create Gmail service: %v", err)
 	}
+
 	return srv, nil
 
 }
 
 func getToken(config *oauth2.Config) *oauth2.Token {
-	tokFile, err := os.Open(path.Join(os.Getenv("HOME"), ".token.json"))
-	if err != nil {
-		log.Fatalf("Unable to generate token: %v", err)
-	}
-	tok, err := tokenFromFile(tokFile.Name())
+	tokFile := path.Join(os.Getenv("HOME"), ".token.json")
+
+	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
-		saveToken(tokFile.Name(), tok)
+		saveToken(tokFile, tok)
 	}
 	return tok
 }
